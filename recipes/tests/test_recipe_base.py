@@ -45,7 +45,7 @@ class RecipeTestBase(TestCase):
         if author_data is None:
             author_data = {}
         
-        Recipe.objects.create(
+        return Recipe.objects.create(
             category= self.make_category(**category_data),
             author= self.make_author(**author_data),
             title= title,
