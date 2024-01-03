@@ -3,5 +3,7 @@ pip install faker
 pip install pillow
 pip install pytest pytest-django
 pip install pytest-watch
-
 test ptw
+
+pip install parameterized
+pip install coverage **coverage run -m pytest  / coverage html
