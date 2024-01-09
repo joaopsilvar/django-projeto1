@@ -46,7 +46,7 @@ def make_pagination(request,queryset,per_page,qty_pages=4):
 
     pagination_range = make_pagination_range(
         paginator.page_range,
-        4,
+        qty_pages,
         current_page,
     )
 
