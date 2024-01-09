@@ -300,16 +300,17 @@ h6 {
     gap: 1rem 0.5rem;
 }
 .pagination .page-item{
-    background: var(--color-gray-3);
+    border: 0.0001px solid var(--color-gray-2);
+    border-radius: 50px;
+    background: var(--color-gray-2);
     padding: 0.5rem 1rem;;
 }
 .pagination .page-link{
     text-decoration: none;
-    background: var(--color-primary);
-    color: var(--color-white);
+    background: var(--color-gray-0);
+    color: var(--color-black);
 }
 .pagination .page-current{
     background: var(--color-primary-dark);
+    color: var(--color-white);
 }
-
-
