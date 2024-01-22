@@ -9,10 +9,8 @@ def add_attr(field, attr_name, attr_new_val):
     existing = field.widget.attrs.get(attr_name, '')
     field.widget.attrs[attr_name] = f'{existing} {attr_new_val}'.strip()
 
-
 def add_placeholder(field, placeholder_val):
     add_attr(field, 'placeholder', placeholder_val)
-
 
 def strong_password(password):
     regex = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$')
@@ -37,6 +35,13 @@ class RegisterForm(forms.ModelForm):
         add_placeholder(self.fields['password'], 'Type your password')
         add_placeholder(self.fields['password2'], 'Repeat your password')
 
+    username = forms.CharField(
+        label='Username',
+        error_messages={'required': 'This field must not be empty'},
+        help_text=(
+            'Obrigatório. 150 caracteres ou menos. '
+            'Letras, números e @/./+/-/_ apenas.'),
+    ) 
     first_name = forms.CharField(
         error_messages={'required': 'Write your first name'},
         label='First name'
@@ -47,15 +52,13 @@ class RegisterForm(forms.ModelForm):
     )
     email = forms.EmailField(
         error_messages={'required': 'E-mail is required'},
-        label='Email'
-    )
-    
+        label='E-mail',
+        help_text=('The e-mail must be valid.')
+    )   
     password = forms.CharField(
         required=True,
         widget=forms.PasswordInput(),
-        error_messages={
-            'required': 'Password must not be empty'
-        },
+        error_messages={'required': 'Password must not be empty'},
         help_text=(
             'Password must have at least one uppercase letter, '
             'one lowercase letter and one number. The length should be '
@@ -68,9 +71,7 @@ class RegisterForm(forms.ModelForm):
         required=True,
         widget=forms.PasswordInput(),
         label='Password2',
-        error_messages={
-            'required': 'Please repeat your password'
-        },
+        error_messages={'required': 'Please repeat your password'},
     )
 
     class Meta:
@@ -82,21 +83,6 @@ class RegisterForm(forms.ModelForm):
             'email',
             'password',
         ]
-        labels = {
-            'username': 'Username',
-            'first_name': 'First name',
-            'last_name': 'Last name',
-            'email': 'E-mail',
-        }
-        help_texts = {
-            'email': 'The e-mail must be valid.',
-        }
-        error_messages = {
-            'username': {
-                'required': 'This field must not be empty',
-            }
-        }
-
     def clean(self):
         cleaned_data = super().clean()
 
