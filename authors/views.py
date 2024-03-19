@@ -5,7 +5,6 @@ from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from recipes.models import Recipe
-from django.utils.text import slugify
 
 from authors.forms.recipe_form import AuthorRecipeForm
 
@@ -129,10 +128,9 @@ def dashboard_recipe_create(request):
         recipe.author = request.user
         recipe.preparation_steps_is_html = False
         recipe.is_published = False
-        recipe.slug = slugify(recipe.title)
         
-        recipe_slug_filter = Recipe.objects.filter(slug=recipe.slug)
-        if recipe_slug_filter:
+        recipe_title_filter = Recipe.objects.filter(title=recipe.title)
+        if recipe_title_filter:
             messages.error(request, 'Ja existe uma receita com o nome informado!')
             return redirect(reverse('authors:dashboard_recipe_new'))
         
