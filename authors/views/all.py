@@ -60,7 +60,7 @@ def login_create(request):
         )
 
         if authenticated_user is not None:
-            messages.success(request, 'Your are logged in.')
+            messages.success(request, f'Your are logged in with {authenticated_user}.')
             login(request, authenticated_user)
         else:
             messages.error(request, 'Invalid credentials')
@@ -80,7 +80,7 @@ def logout_view(request):
         messages.error(request, 'Invalid logout user')
         return redirect(reverse('authors:login'))
 
-    messages.success(request, 'Logged out successfully')
+    messages.success(request, 'Logout out successfully')
     logout(request)
     return redirect(reverse('authors:login'))
 
