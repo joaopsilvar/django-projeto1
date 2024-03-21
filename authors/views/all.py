@@ -46,7 +46,6 @@ def login_view(request):
         'form_action': reverse('authors:login_create')
     })
 
-
 def login_create(request):
     if not request.POST:
         raise Http404()
