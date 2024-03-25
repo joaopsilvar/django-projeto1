@@ -46,20 +46,16 @@ class RecipeListViewCategory(RecipeListViewBase):
     
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
-        category_id = self.kwargs.get('category_id', None)
-        if category_id is not None:
-            qs = qs.filter(
-                category_id=category_id,
+        qs = qs.filter(
+                category__id=self.kwargs.get('category_id', None),
             )
         return qs
     
     def get_context_data(self,*args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        category_id = self.kwargs.get('category_id', None)
-        if category_id is not None:
-            ctx.update({
-                'title': f"{ctx['recipes'][0].category.name} - Category | "
-            })
+        ctx.update({
+            'title': f"{ctx['recipes'][0].category.name} - Category | "
+        })
         return ctx
 
 class RecipeListViewSearch(RecipeListViewBase):
@@ -68,25 +64,22 @@ class RecipeListViewSearch(RecipeListViewBase):
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
         search_term = self.request.GET.get('q', '').strip()
-        
-        if search_term is not None:
-            qs = qs.filter(
-                Q(
-                    Q(title__icontains=search_term) |
-                    Q(description__icontains=search_term),
-                ),
-            )
+        qs = qs.filter(
+            Q(
+                Q(title__icontains=search_term) |
+                Q(description__icontains=search_term),
+            ),
+        )
         return qs
     
     def get_context_data(self,*args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         search_term = self.request.GET.get('q', '').strip()
-        if search_term is not None:
-             ctx.update({
-                'page_title': f'Search for "{search_term}" |',
-                'search_term': search_term,
-                'additional_url_query': f'&q={search_term}',
-             })
+        ctx.update({
+        'page_title': f'Search for "{search_term}" |',
+        'search_term': search_term,
+        'additional_url_query': f'&q={search_term}',
+        })
         return ctx
         
 
