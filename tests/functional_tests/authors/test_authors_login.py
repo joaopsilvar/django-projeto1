@@ -24,7 +24,7 @@ class AuthorsLoginTest(AuhtorsBaseTest):
         #Usuário clica em entrar
         form.submit()
         
-        self.assertIn(f'Your are logged in with {user.username}.', self.browser.find_element(By.TAG_NAME, 'body').text)
+        self.assertIn('Se your recipe, create a new recipe or click here to logout.', self.browser.find_element(By.TAG_NAME, 'body').text)
     
     def test_login_create_raises_404_if_not_POST_method(self):
         #Usuário abre a página de Login

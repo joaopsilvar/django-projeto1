@@ -78,7 +78,7 @@ def logout_view(request):
         messages.error(request, 'Invalid logout user')
         return redirect(reverse('authors:login'))
 
-    messages.success(request, 'Logged out successfully')
+    messages.success(request, 'Logout out successfully')
     logout(request)
     return redirect(reverse('authors:login'))
 
