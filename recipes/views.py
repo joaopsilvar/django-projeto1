@@ -5,6 +5,7 @@ from django.http.response import Http404, HttpResponse as HttpResponse
 from utils.pagination import make_pagination
 from django.views.generic import ListView,DetailView
 from django.http import JsonResponse
+from django.forms.models import model_to_dict
 
 from recipes.models import Recipe
 
@@ -113,3 +114,22 @@ class RecipeDetail(DetailView):
             'is_detail_page': True
         })
         return ctx
+
+class RecipeDetailApi(RecipeDetail):
+    def render_to_response(self, context,**response_kwargs):
+         # Obtendo a lista de receitas do contexto
+        recipe = self.get_context_data()['recipe']
+        recipe_dict = model_to_dict(recipe)
+        recipe_dict['created_at'] = str(recipe.created_at)
+        recipe_dict['updated_at'] = str(recipe.updated_at)
+
+        del recipe_dict['is_published']
+        del recipe_dict['preparation_steps_is_html']
+
+        if recipe_dict.get('cover'):
+            recipe_dict['cover'] = self.request.build_absolute_uri() + recipe_dict['cover'].url[1:]
+        else:
+            recipe_dict['cover'] = ''
+
+        # Retornando a resposta JSON com a lista de receitas
+        return JsonResponse({'recipe': recipe_dict})
