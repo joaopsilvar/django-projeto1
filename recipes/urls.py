@@ -10,7 +10,7 @@ from rest_framework_simplejwt.views import(
 app_name = 'recipes'
 
 recipe_api_v2_router = SimpleRouter()
-recipe_api_v2_router.register('recipes/api/v2',api.RecipeAPIV2Viewset,'recipes-api')
+recipe_api_v2_router.register('recipes/api/v2',api.RecipeAPIv2ViewSet,'recipes-api')
 
 urlpatterns = [
     path('',site.RecipeListViewHome.as_view(), name="home"),

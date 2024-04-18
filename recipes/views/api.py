@@ -1,57 +1,67 @@
-from recipes.models import Recipe
-from ..serializers import RecipeSerializer
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.pagination import PageNumberPagination
-from ..permissions import IsOwner
 from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
-class RecipeAPIV2Pagination(PageNumberPagination):
-    page_size = 10
+from recipes.models import Recipe
+from recipes.permissions import IsOwner
+from recipes.serializers import RecipeSerializer
 
 
-class RecipeAPIV2Viewset(ModelViewSet):
+class RecipeAPIv2Pagination(PageNumberPagination):
+    page_size = 2
+
+
+class RecipeAPIv2ViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    pagination_class = RecipeAPIV2Pagination
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = RecipeAPIv2Pagination
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
 
-    def get_object(self):
-        pk=self.kwargs.get('pk','')
-        obj = get_object_or_404(
-            self.queryset(),
-            pk=pk
-        )
-        self.check_object_permissions(self.request, obj)
-        return obj
-    
     def get_serializer_class(self):
         return super().get_serializer_class()
-    
+
     def get_serializer(self, *args, **kwargs):
         return super().get_serializer(*args, **kwargs)
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["example"] = 'esse é o contexto'
+        context["example"] = 'this is in context now'
         return context
-    
+
     def get_queryset(self):
         qs = super().get_queryset()
 
-        category_id = self.request.query_params.get('category_id','')
+        category_id = self.request.query_params.get('category_id', '')
 
         if category_id != '' and category_id.isnumeric():
             qs = qs.filter(category_id=category_id)
 
         return qs
-    
+
+    def get_object(self):
+        pk = self.kwargs.get('pk', '')
+
+        obj = get_object_or_404(
+            self.get_queryset(),
+            pk=pk,
+        )
+
+        self.check_object_permissions(self.request, obj)
+
+        return obj
+
     def get_permissions(self):
-        if self.request.method in ['PATCH','DELETE']:
-            return[IsOwner()]
+        if self.request.method in ['PATCH', 'DELETE']:
+            return [IsOwner(), ]
         return super().get_permissions()
-    
+
+    def list(self, request, *args, **kwargs):
+        print('REQUEST', request.user)
+        print(request.user.is_authenticated)
+        return super().list(request, *args, **kwargs)
+
     def partial_update(self, request, *args, **kwargs):
         recipe = self.get_object()
         serializer = RecipeSerializer(
