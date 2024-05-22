@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from rest_framework import status
 from recipes.models import Recipe
 from recipes.permissions import IsOwner
 from recipes.serializers import RecipeSerializer
@@ -18,6 +19,7 @@ class RecipeAPIv2ViewSet(ModelViewSet):
     serializer_class = RecipeSerializer
     pagination_class = RecipeAPIv2Pagination
     permission_classes = [IsAuthenticatedOrReadOnly, ]
+    http_method_names = ['get','options','head','patch','post','delete']
 
     def get_serializer_class(self):
         return super().get_serializer_class()
@@ -61,6 +63,17 @@ class RecipeAPIv2ViewSet(ModelViewSet):
         print('REQUEST', request.user)
         print(request.user.is_authenticated)
         return super().list(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(author=request.user)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
 
     def partial_update(self, request, *args, **kwargs):
         recipe = self.get_object()
